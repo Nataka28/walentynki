@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zostaniesz moją Walentynką?</title>
+    <style>
+        /* --- STYLIZACJA WYGLĄDU (CSS) --- */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Żeby paski przewijania nie psuły efektu */
+            background-color: #ffe6e6;
+        }
+
+        /* Tło - Kolarz zdjęć */
+        .background-collage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Tło musi być pod spodem */
+            opacity: 0.4; /* Zdjęcia lekko przezroczyste, żeby napisy były czytelne */
+            
+            /* Ustawienie zdjęć w siatce */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .background-collage img {
+            width: 200px; /* Rozmiar zdjęć */
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            transform: rotate(-5deg); /* Lekkie przechylenie dla efektu luzu */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Główny kontener z pytaniem */
+        .container {
+            text-align: center;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.85); /* Białe tło pod tekstem dla czytelności */
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            max-width: 90%;
+        }
+
+        h1 {
+            color: #d32f2f;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Przycisk TAK */
+        .btn-yes {
+            background-color: #4CAF50; /* Zielony */
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        /* Przycisk NIE */
+        .btn-no {
+            background-color: #f44336; /* Czerwony */
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            position: relative;
+        }
+
+        /* Ekran sukcesu (po kliknięciu TAK) */
+        .success-message {
+            display: none; /* Domyślnie ukryte */
+            text-align: center;
+            z-index: 20;
+        }
+        
+        .success-message h2 {
+            font-size: 3rem;
+            color: #d32f2f;
+        }
+        
+        .success-message img {
+            width: 300px;
+            border-radius: 15px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="background-collage">
+        <img src="foto1.JFif" alt="Zdjecie 1">
+        <img src="foto2.JFif" alt="Zdjecie 2">
+        <img src="foto3.JFif" alt="Zdjecie 3">
+        <img src="foto4.JFif" alt="Zdjecie 4">
+        <img src="foto1.JFif" alt="Zdjecie 5"> <img src="foto2.jfif" alt="Zdjecie 6">
+    </div>
+
+    <div class="container" id="mainContainer">
+        <h1>Czy zostaniesz moją walentynką? 🌹</h1>
+        <div class="buttons">
+            <button class="btn-yes" onclick="clickYes()">TAK</button>
+            <button class="btn-no" onclick="clickNo()" id="noBtn">NIE</button>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage">
+        <h2>JEEEJ! Wiedziałam! ❤️</h2>
+        <p>Do zobaczenia w Walentynki!</p>
+        <img src="https://platformakultury.pl/wp-content/uploads/2023/08/Slodkie-Gify-na-Dobranoc-1.gif" alt="Happy Cat">
+    </div>
+
+    <script>
+        /* --- LOGIKA DZIAŁANIA (JavaScript) --- */
+        
+        let yesButtonSize = 20; // Początkowy rozmiar czcionki przycisku TAK
+        let clickCount = 0;
+
+        // Lista smutnych tekstów
+        const sadMessages = [
+            "Jesteś pewna?",
+            "Naprawdę nie?",
+            "Ranisz moje serce... 💔",
+            "Ale tak na serio?",
+            "Będę płakać...",
+            "Złamię się...",
+            "To bardzo boli :(",
+            "Ostatnia szansa!",
+            "Proszę, przemyśl to!"
+        ];
+
+        function clickNo() {
+            const noBtn = document.getElementById('noBtn');
+            const yesBtn = document.querySelector('.btn-yes');
+
+            // 1. Zmień tekst na przycisku NIE
+            if (clickCount < sadMessages.length) {
+                noBtn.innerText = sadMessages[clickCount];
+            } else {
+                noBtn.innerText = "NO WEŹ! 😭"; // Tekst gdy skończą się te z listy
+            }
+            clickCount++;
+
+            // 2. Zwiększ przycisk TAK
+            yesButtonSize = yesButtonSize * 1.3; // Powiększ o 30% za każdym razem
+            yesBtn.style.fontSize = yesButtonSize + 'px';
+            
+            // Opcjonalnie powiększ też padding (odstępy wewnątrz przycisku)
+            const currentPadding = 15 + (clickCount * 5);
+            yesBtn.style.padding = currentPadding + "px " + (currentPadding * 2) + "px";
+        }
+
+        function clickYes() {
+            // Ukryj pytanie
+            document.getElementById('mainContainer').style.display = 'none';
+            // Pokaż ekran sukcesu
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Opcjonalnie: efekt konfetti (prosty, bez zewnętrznych bibliotek ciężko, ale gif załatwia sprawę)
+        }
+    </script>
+
+</body>
+</html>
